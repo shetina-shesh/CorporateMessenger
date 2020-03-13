@@ -1,5 +1,5 @@
 
-public class TestClass {
+public class qwe {
 
 	/**
 	 * @param args

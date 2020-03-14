@@ -13,7 +13,6 @@ public class TestServer {
 	public static void main(String[] args) throws ClassNotFoundException, SQLException {
 		Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");  
 		String connectionUrl = "jdbc:sqlserver://localhost\\SQLEXPRESS;database=TestBaza;integratedSecurity=true;";  
-		//Connection con = DriverManager.getConnection(connectionUrl);
 		JOptionPane.showMessageDialog(null, "Connected");
         
         try (Connection con = DriverManager.getConnection(connectionUrl); Statement stmt = con.createStatement();) {

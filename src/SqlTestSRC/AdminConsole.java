@@ -4,6 +4,8 @@ import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 import javax.swing.JButton;
+import javax.swing.JScrollPane;
+import javax.swing.ScrollPaneConstants;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
@@ -43,12 +45,12 @@ public class AdminConsole extends JFrame {
 				String connectionUrl = "jdbc:sqlserver://localhost\\SQLEXPRESS;database=TestBaza;integratedSecurity=true;";
 				
 			       try (Connection con = DriverManager.getConnection(connectionUrl); Statement stmt = con.createStatement();) {
-			            String SQL = "SELECT RoomNumber FROM RoomTable";
+			            String SQL = "SELECT RoomTable.RoomNumber, Colloborators.Name FROM RoomTable, Colloborators WHERE RoomTable.ID=Colloborators.ID_ROOM";
 			            ResultSet rs = stmt.executeQuery(SQL);
 
 			            // Iterate through the data in the result set and display it.
 			            while (rs.next()) {
-			            	txtMenu.append(rs.getString("RoomNumber")+"\n");
+			            	txtMenu.append(rs.getString("RoomNumber")+ "\n" + "\t" +rs.getString("Name")+"\n");
 			                System.out.println(rs.getString("RoomNumber"));
 			            }
 			        }
@@ -121,8 +123,11 @@ public class AdminConsole extends JFrame {
 
 		
 		txtMenu = new JTextArea();
-		txtMenu.setBounds(172, 44, 350, 189);
-		getContentPane().add(txtMenu);
+		txtMenu.setEditable(false);
+		JScrollPane scroll = new JScrollPane(txtMenu);
+		scroll.setBounds(172, 44, 350, 189);
+		scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		getContentPane().add(scroll);
 		
 	}
 	

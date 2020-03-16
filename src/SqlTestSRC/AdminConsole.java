@@ -45,13 +45,20 @@ public class AdminConsole extends JFrame {
 				String connectionUrl = "jdbc:sqlserver://localhost\\SQLEXPRESS;database=TestBaza;integratedSecurity=true;";
 				
 			       try (Connection con = DriverManager.getConnection(connectionUrl); Statement stmt = con.createStatement();) {
-			            String SQL = "SELECT RoomTable.RoomNumber, Colloborators.Name FROM RoomTable, Colloborators WHERE RoomTable.ID=Colloborators.ID_ROOM";
-			            ResultSet rs = stmt.executeQuery(SQL);
+
+			    	   String SQL = 
+			    	   		"SELECT distinct RoomTable.RoomNumber, STUFF((SELECT ', ' + (Colloborators.LastName + ' ' +Colloborators.Name+ ' ' +Colloborators.SecondName) FROM Colloborators WHERE Colloborators.ID_ROOM=RoomTable.ID ORDER BY Colloborators.Name FOR XML PATH('')),1,1,'') AS Name FROM RoomTable left join Colloborators ON RoomTable.ID=Colloborators.ID_ROOM";
+			    	   ResultSet rs = stmt.executeQuery(SQL);
 
 			            // Iterate through the data in the result set and display it.
 			            while (rs.next()) {
-			            	txtMenu.append(rs.getString("RoomNumber")+ "\n" + "\t" +rs.getString("Name")+"\n");
+			            	if(rs.getString("Name") == null){
+			            		txtMenu.append(rs.getString("RoomNumber")+ "\n\n");
+			            	}else{
+			            	txtMenu.append(rs.getString("RoomNumber")+ "\n\n" + "    " +rs.getString("Name")+"\n\n");
 			                System.out.println(rs.getString("RoomNumber"));
+			            	}
+			                
 			            }
 			        }
 			        // Handle any errors that may have occurred.

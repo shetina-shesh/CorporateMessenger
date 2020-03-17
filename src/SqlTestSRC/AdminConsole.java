@@ -55,8 +55,15 @@ public class AdminConsole extends JFrame {
 			            	if(rs.getString("Name") == null){
 			            		txtMenu.append(rs.getString("RoomNumber")+ "\n\n");
 			            	}else{
-			            	txtMenu.append(rs.getString("RoomNumber")+ "\n\n" + "    " +rs.getString("Name")+"\n\n");
-			                System.out.println(rs.getString("RoomNumber"));
+			            		String nameFlag = rs.getString("Name");			            		
+			            		txtMenu.append(rs.getString("RoomNumber")+ "\n\n");
+			            			for (String flag : nameFlag.split(",")) {
+			            				txtMenu.append("    " +flag+"\n\n");
+			            			}
+			            		System.out.println(rs.getString("RoomNumber"));
+			                	for (String flag : nameFlag.split(",")) {
+		            	         System.out.println(flag);
+		            	      }
 			            	}
 			                
 			            }
@@ -65,6 +72,7 @@ public class AdminConsole extends JFrame {
 			        catch (SQLException e) {
 			            e.printStackTrace();
 			        }
+			       
 			}
 		});
 	}
@@ -102,15 +110,26 @@ public class AdminConsole extends JFrame {
  
 					
 				       try (Connection con = DriverManager.getConnection(connectionUrl); Statement stmt = con.createStatement();) {
-				            String SQL = "SELECT RoomNumber FROM RoomTable";
-				            ResultSet rs = stmt.executeQuery(SQL);
+				    	   String SQL = 
+					    	   		"SELECT distinct RoomTable.RoomNumber, STUFF((SELECT ', ' + (Colloborators.LastName + ' ' +Colloborators.Name+ ' ' +Colloborators.SecondName) FROM Colloborators WHERE Colloborators.ID_ROOM=RoomTable.ID ORDER BY Colloborators.Name FOR XML PATH('')),1,1,'') AS Name FROM RoomTable left join Colloborators ON RoomTable.ID=Colloborators.ID_ROOM";
+					    	   ResultSet rs = stmt.executeQuery(SQL);
 
-				            // Iterate through the data in the result set and display it.
-				            while (rs.next()) {
-				            	txtMenu.append(rs.getString("RoomNumber")+"\n");
-				                System.out.println(rs.getString("RoomNumber"));
-				            }
-				        }
+					            // Iterate through the data in the result set and display it.
+					            while (rs.next()) {
+					            	if(rs.getString("Name") == null){
+					            		txtMenu.append(rs.getString("RoomNumber")+ "\n\n");
+					            	}else{
+					            		String nameFlag = rs.getString("Name");			            		
+					            		txtMenu.append(rs.getString("RoomNumber")+ "\n\n");
+					            			for (String flag : nameFlag.split(",")) {
+					            				txtMenu.append("    " +flag+"\n\n");
+					            			}
+
+				            	      }
+					            	}
+					                
+					            }
+				        
 				        // Handle any errors that may have occurred.
 				        catch (SQLException e) {
 				            e.printStackTrace();
@@ -136,8 +155,16 @@ public class AdminConsole extends JFrame {
 		scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		getContentPane().add(scroll);
 		
+		JButton btnAddUser = new JButton("Add user");
+		btnAddUser.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				//открыть новое окно
+				AddClientForm addForm = new AddClientForm();
+				addForm.setVisible(true);
+			}
+		});
+		btnAddUser.setBounds(33, 208, 116, 25);
+		getContentPane().add(btnAddUser);
+		
 	}
-	
-	
-
 }

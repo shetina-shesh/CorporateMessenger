@@ -4,6 +4,7 @@ import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 import javax.swing.JButton;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 
@@ -138,11 +139,11 @@ public class AdminConsole extends JFrame {
 				
 			}
 		});
-		btnAddRoom.setBounds(33, 38, 116, 25);
+		btnAddRoom.setBounds(27, 13, 116, 25);
 		getContentPane().add(btnAddRoom);
 		
 		txtAddRoom = new JTextField();
-		txtAddRoom.setBounds(33, 76, 116, 22);
+		txtAddRoom.setBounds(27, 51, 116, 22);
 		getContentPane().add(txtAddRoom);
 		txtAddRoom.setColumns(10);
 		
@@ -151,7 +152,7 @@ public class AdminConsole extends JFrame {
 		txtMenu = new JTextArea();
 		txtMenu.setEditable(false);
 		JScrollPane scroll = new JScrollPane(txtMenu);
-		scroll.setBounds(172, 44, 350, 189);
+		scroll.setBounds(197, 43, 380, 228);
 		scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		getContentPane().add(scroll);
 		
@@ -163,8 +164,25 @@ public class AdminConsole extends JFrame {
 				addForm.setVisible(true);
 			}
 		});
-		btnAddUser.setBounds(33, 208, 116, 25);
+		btnAddUser.setBounds(197, 284, 116, 25);
 		getContentPane().add(btnAddUser);
+		
+		JButton btnDeleteUser = new JButton("Delete User");
+		btnDeleteUser.setBounds(461, 284, 116, 25);
+		getContentPane().add(btnDeleteUser);
+		
+		JButton btnDeleteRoom = new JButton("Delete Room");
+		btnDeleteRoom.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				//new delete form
+				
+				JOptionPane.showMessageDialog(null, "Удаление комнаты приведет к удалению всех сотрудников из неё", "ОБРАТИТЕ ВНИМАНИЕ!", JOptionPane.INFORMATION_MESSAGE);
+				DeleteRoomForm addDeleteForm = new DeleteRoomForm();
+				addDeleteForm.setVisible(true);
+			}
+		});
+		btnDeleteRoom.setBounds(196, 13, 116, 25);
+		getContentPane().add(btnDeleteRoom);
 		
 	}
 }

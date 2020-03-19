@@ -7,6 +7,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
@@ -29,6 +30,7 @@ public class AddClientForm extends JFrame {
 	
 	private String room, lastname, name, secondname, post;
 	private String id;
+	private boolean flag = true;
 
 	/**
 	 * Create the frame.
@@ -92,6 +94,12 @@ public class AddClientForm extends JFrame {
 				//addPerson method
 				
 				room = txtAddRoom.getText();
+				
+				if(room.equals("")){
+					JOptionPane.showMessageDialog(null, "Не введен номер кабинета", "Ошибка", JOptionPane.INFORMATION_MESSAGE);
+				}
+				else{
+					
 				lastname = txtLastName.getText();
 				name = txtName.getText();
 				secondname = txtSecondName.getText();
@@ -114,26 +122,36 @@ public class AddClientForm extends JFrame {
 		            while (rs.next()) {
 		            	if(rs.getString("RoomNumber").equals(room)){
 		            		id = rs.getString("ID");
+		            		flag = true;
+		            		break;
+		            	}else{            		
+		            		flag = false;
 		            	}
 		            	}
+		            
+		            if(flag == false){
+		            	JOptionPane.showMessageDialog(null, "Кабинета не существует", "Ошибка", JOptionPane.INFORMATION_MESSAGE);
+		            }
+		            else{
+		            	if(lastname.equals("") || name.equals("") || secondname.equals("") || post.equals("")){
+		            		JOptionPane.showMessageDialog(null, "Все поля должны быть заполнены", "Предупреждение", JOptionPane.INFORMATION_MESSAGE);
+		            	}
+		            	else{    		 
+		 			            String SQL2 = "INSERT INTO Colloborators VALUES('"+id+"','"+lastname+"','"+name+"','"+secondname+"','"+post+"')";
+		 			            stmt.executeUpdate(SQL2);
+			
+		 			       JOptionPane.showMessageDialog(null, "Пользователь добавлен", "Успеншо", JOptionPane.INFORMATION_MESSAGE);
+		 			       dispose();
+		            	}
+		            }
 		        }
 		        // Handle any errors that may have occurred.
 		        catch (SQLException e) {
 		            e.printStackTrace();
 		        }
-				
-				
-			       try (Connection con = DriverManager.getConnection(connectionUrl); Statement stmt = con.createStatement();) {
-			            String SQL = "INSERT INTO Colloborators VALUES('"+id+"','"+lastname+"','"+name+"','"+secondname+"','"+post+"')";
-			            stmt.executeUpdate(SQL);
-			        }
-			        // Handle any errors that may have occurred.
-			        catch (SQLException e) {
-			            e.printStackTrace();
-			        }
-				
-				
+						
 			}
+		}
 		});
 		btnAddPerson.setBounds(235, 309, 97, 25);
 		contentPane.add(btnAddPerson);

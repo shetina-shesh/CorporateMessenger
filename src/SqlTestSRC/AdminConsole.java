@@ -90,8 +90,12 @@ public class AdminConsole extends JFrame {
 		btnAddRoom.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				//method
-				txtMenu.setText("");
 				room = txtAddRoom.getText();
+				if(room.equals("")){
+					JOptionPane.showMessageDialog(null, "Не введен номер кабинета", "Ошибка", JOptionPane.INFORMATION_MESSAGE);
+				}
+				else{
+					txtMenu.setText("");
 				try {
 					Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
 				} catch (ClassNotFoundException e1) {
@@ -138,6 +142,7 @@ public class AdminConsole extends JFrame {
 				
 				
 			}
+		}
 		});
 		btnAddRoom.setBounds(27, 13, 116, 25);
 		getContentPane().add(btnAddRoom);
@@ -162,20 +167,27 @@ public class AdminConsole extends JFrame {
 				//открыть новое окно
 				AddClientForm addForm = new AddClientForm();
 				addForm.setVisible(true);
+				
 			}
 		});
 		btnAddUser.setBounds(197, 284, 116, 25);
 		getContentPane().add(btnAddUser);
 		
 		JButton btnDeleteUser = new JButton("Delete User");
+		btnDeleteUser.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				// delete user method
+				DeleteUserForm deleteUser = new DeleteUserForm();
+				deleteUser.setVisible(true);
+			}
+		});
 		btnDeleteUser.setBounds(461, 284, 116, 25);
 		getContentPane().add(btnDeleteUser);
 		
 		JButton btnDeleteRoom = new JButton("Delete Room");
 		btnDeleteRoom.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				//new delete form
-				
+				//new delete form		
 				JOptionPane.showMessageDialog(null, "Удаление комнаты приведет к удалению всех сотрудников из неё", "ОБРАТИТЕ ВНИМАНИЕ!", JOptionPane.INFORMATION_MESSAGE);
 				DeleteRoomForm addDeleteForm = new DeleteRoomForm();
 				addDeleteForm.setVisible(true);

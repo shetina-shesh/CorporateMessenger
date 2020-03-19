@@ -7,6 +7,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
@@ -24,9 +25,9 @@ public class DeleteRoomForm extends JFrame {
 	private JTextField txtRoom;
 
 	private String id, room;
-	/**
-	 * Create the frame.
-	 */
+	private boolean flag = true;
+	
+	
 	public DeleteRoomForm() {
 		setTitle("Delete Room");
 		//setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -50,6 +51,12 @@ public class DeleteRoomForm extends JFrame {
 			public void actionPerformed(ActionEvent arg0) {
 				//delete room method
 				room = txtRoom.getText();
+				
+				if(room.equals("")){
+					JOptionPane.showMessageDialog(null, "Не введен номер кабинета", "Ошибка", JOptionPane.INFORMATION_MESSAGE);
+				}
+				else{
+				
 				try {
 					Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
 				} catch (ClassNotFoundException e1) {
@@ -67,14 +74,31 @@ public class DeleteRoomForm extends JFrame {
 		            while (rs.next()) {
 		            	if(rs.getString("RoomNumber").equals(room)){
 		            		id = rs.getString("ID");
+		            		flag = true;
+		            		break;
+		            	}else{
+		            		flag = false;
 		            	}
 		            	}
+		            
+		            if(flag == false){
+		            	JOptionPane.showMessageDialog(null, "Кабинета не существует", "Ошибка", JOptionPane.INFORMATION_MESSAGE);
+		            }
+		            else{
+		            	String SQL2 = "DELETE FROM Colloborators WHERE ID_ROOM = "+id+"";
+		            	String SQL3 = "DELETE FROM RoomTable WHERE ID = "+id+"";
+		            	stmt.executeUpdate(SQL2);
+		            	stmt.executeUpdate(SQL3);
+		            	JOptionPane.showMessageDialog(null, "Удаление прошло успешно", "Выполнено", JOptionPane.INFORMATION_MESSAGE);
+		            	dispose();
+		            }
 		            //System.out.print(id);
 		        }
 		        // Handle any errors that may have occurred.
 		        catch (SQLException e) {
 		            e.printStackTrace();
 		        }
+			}
 			}
 		});
 		btnDeleteRoom.setBounds(106, 127, 97, 25);

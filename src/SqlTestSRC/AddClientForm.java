@@ -27,10 +27,14 @@ public class AddClientForm extends JFrame {
 	private JTextField txtName;
 	private JTextField txtSecondName;
 	private JTextField txtPost;
+	private JTextField txtLogin;
+	private JTextField txtPassword;
 	
 	private String room, lastname, name, secondname, post;
-	private String id;
+	private String idRoom, idPerson;
+	private String login, password;
 	private boolean flag = true;
+
 
 	/**
 	 * Create the frame.
@@ -104,6 +108,8 @@ public class AddClientForm extends JFrame {
 				name = txtName.getText();
 				secondname = txtSecondName.getText();
 				post = txtPost.getText();
+				login = txtLogin.getText();
+				password = txtPassword.getText();
 				
 				try {
 					Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
@@ -121,7 +127,7 @@ public class AddClientForm extends JFrame {
 		            
 		            while (rs.next()) {
 		            	if(rs.getString("RoomNumber").equals(room)){
-		            		id = rs.getString("ID");
+		            		idRoom = rs.getString("ID");
 		            		flag = true;
 		            		break;
 		            	}else{            		
@@ -133,12 +139,26 @@ public class AddClientForm extends JFrame {
 		            	JOptionPane.showMessageDialog(null, "Кабинета не существует", "Ошибка", JOptionPane.INFORMATION_MESSAGE);
 		            }
 		            else{
-		            	if(lastname.equals("") || name.equals("") || secondname.equals("") || post.equals("")){
+		            	if(lastname.equals("") || name.equals("") || secondname.equals("") || post.equals("") || login.equals("") || password.equals("")){
 		            		JOptionPane.showMessageDialog(null, "Все поля должны быть заполнены", "Предупреждение", JOptionPane.INFORMATION_MESSAGE);
 		            	}
-		            	else{    		 
-		 			            String SQL2 = "INSERT INTO Colloborators VALUES('"+id+"','"+lastname+"','"+name+"','"+secondname+"','"+post+"')";
+		            	else{
+		            		
+		 			            String SQL2 = "INSERT INTO Colloborators VALUES('"+idRoom+"','"+lastname+"','"+name+"','"+secondname+"','"+post+"')";
 		 			            stmt.executeUpdate(SQL2);
+		 			            
+		 			            String SQL3 = "SELECT * FROM Colloborators";
+		 			            ResultSet rs3 = stmt.executeQuery(SQL3);
+		 			            
+		 			            while(rs3.next()){
+		 			            	if(lastname.equals(rs3.getString("LastName")) && name.equals(rs3.getString("Name")) && secondname.equals(rs3.getString("SecondName")) && post.equals(rs3.getString("Post"))){
+		 			            		idPerson = rs3.getString("ID");
+		 			            		break;
+		 			            	}
+		 			            }
+		 			            
+		 			            String SQL4 = "INSERT INTO Login VALUES ('"+ idPerson +"','"+ login +"','"+ password +"')";
+		 			           stmt.executeUpdate(SQL4);
 			
 		 			       JOptionPane.showMessageDialog(null, "Пользователь добавлен", "Успеншо", JOptionPane.INFORMATION_MESSAGE);
 		 			       dispose();
@@ -155,5 +175,23 @@ public class AddClientForm extends JFrame {
 		});
 		btnAddPerson.setBounds(235, 309, 97, 25);
 		contentPane.add(btnAddPerson);
+		
+		JLabel lblLogin = new JLabel("Login");
+		lblLogin.setBounds(417, 170, 56, 16);
+		contentPane.add(lblLogin);
+		
+		txtLogin = new JTextField();
+		txtLogin.setBounds(376, 194, 116, 22);
+		contentPane.add(txtLogin);
+		txtLogin.setColumns(10);
+		
+		JLabel lblNewLabel = new JLabel("Password");
+		lblNewLabel.setBounds(405, 219, 56, 16);
+		contentPane.add(lblNewLabel);
+		
+		txtPassword = new JTextField();
+		txtPassword.setBounds(376, 248, 116, 22);
+		contentPane.add(txtPassword);
+		txtPassword.setColumns(10);
 	}
 }

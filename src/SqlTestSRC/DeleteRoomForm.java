@@ -24,7 +24,8 @@ public class DeleteRoomForm extends JFrame {
 	private JPanel contentPane;
 	private JTextField txtRoom;
 
-	private String id, room;
+	private String idRoom, room;
+	private String idPerson;
 	private boolean flag = true;
 	
 	
@@ -67,13 +68,13 @@ public class DeleteRoomForm extends JFrame {
 				String connectionUrl = "jdbc:sqlserver://localhost\\SQLEXPRESS;database=TestBaza;integratedSecurity=true;";
 				
 				
-				try (Connection con = DriverManager.getConnection(connectionUrl); Statement stmt = con.createStatement();) {
+				try (Connection con = DriverManager.getConnection(connectionUrl); Statement stmt = con.createStatement(); Statement stmt2 = con.createStatement();) {
 		            String SQL = "SELECT ID, RoomNumber FROM RoomTable";
 		            ResultSet rs = stmt.executeQuery(SQL);
 		            
 		            while (rs.next()) {
 		            	if(rs.getString("RoomNumber").equals(room)){
-		            		id = rs.getString("ID");
+		            		idRoom = rs.getString("ID");
 		            		flag = true;
 		            		break;
 		            	}else{
@@ -85,8 +86,17 @@ public class DeleteRoomForm extends JFrame {
 		            	JOptionPane.showMessageDialog(null, "Кабинета не существует", "Ошибка", JOptionPane.INFORMATION_MESSAGE);
 		            }
 		            else{
-		            	String SQL2 = "DELETE FROM Colloborators WHERE ID_ROOM = "+id+"";
-		            	String SQL3 = "DELETE FROM RoomTable WHERE ID = "+id+"";
+		            	String SQLS = "SELECT ID FROM Colloborators WHERE ID_ROOM = "+idRoom+"";
+		            	String SQLD = "DELETE FROM Login WHERE ID_L = "+ idPerson +"";
+		            	ResultSet rs3 = stmt.executeQuery(SQLS);
+		            	
+		            	while (rs3.next()){
+		            		idPerson = rs3.getString("ID");
+		            		stmt2.executeUpdate(SQLD);
+		            	}
+		            	
+		            	String SQL2 = "DELETE FROM Colloborators WHERE ID_ROOM = "+idRoom+"";
+		            	String SQL3 = "DELETE FROM RoomTable WHERE ID = "+idRoom+"";
 		            	stmt.executeUpdate(SQL2);
 		            	stmt.executeUpdate(SQL3);
 		            	JOptionPane.showMessageDialog(null, "Удаление прошло успешно", "Выполнено", JOptionPane.INFORMATION_MESSAGE);

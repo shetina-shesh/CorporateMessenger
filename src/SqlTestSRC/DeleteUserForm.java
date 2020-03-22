@@ -27,7 +27,8 @@ public class DeleteUserForm extends JFrame {
 	private JTextField txtName;
 	private JTextField txtSecondName;
 	
-	private String id, room;
+	private String idRoom, room;
+	private String idPerson;
 	private boolean flag = true;
 
 	public DeleteUserForm() {
@@ -110,7 +111,7 @@ public class DeleteUserForm extends JFrame {
 		            
 		            while (rs.next()) {
 		            	if(rs.getString("RoomNumber").equals(room)){
-		            		id = rs.getString("ID");
+		            		idRoom = rs.getString("ID");
 		            		flag = true;
 		            		break;
 		            	}else{
@@ -124,12 +125,15 @@ public class DeleteUserForm extends JFrame {
 		            }
 		            else{
 						
-				            String SQL2 = "DELETE FROM Colloborators WHERE ID_ROOM = "+id+" AND LastName = '"+txtLastName.getText()+"' AND Name = '"+txtName.getText()+"' AND SecondName = '"+txtSecondName.getText()+"' AND Post = '"+txtPost.getText()+"'";
-				            String SQL3 = "SELECT * FROM Colloborators WHERE ID_ROOM = "+id+"";
+				            String SQL2 = "DELETE FROM Colloborators WHERE ID_ROOM = "+idRoom+" AND LastName = '"+txtLastName.getText()+"' AND Name = '"+txtName.getText()+"' AND SecondName = '"+txtSecondName.getText()+"' AND Post = '"+txtPost.getText()+"'";
+				            String SQL3 = "SELECT * FROM Colloborators WHERE ID_ROOM = "+idRoom+"";
+				            String SQL4 = "DELETE FROM Login WHERE ID_L = "+ idPerson +"";
 				            ResultSet rs3 = stmt.executeQuery(SQL3);
 				            
 				            while (rs3.next()) {
 				            	if(rs3.getString("LastName").equals(txtLastName.getText()) && rs3.getString("Name").equals(txtName.getText()) && rs3.getString("SecondName").equals(txtSecondName.getText()) && rs3.getString("Post").equals(txtPost.getText())){
+				            		idPerson = rs3.getString("ID");
+				            		stmt.executeUpdate(SQL4);
 				            		stmt.executeUpdate(SQL2);
 				            		JOptionPane.showMessageDialog(null, "Пользователь удален", "Выполнено", JOptionPane.INFORMATION_MESSAGE);
 				            		//flag = true;
